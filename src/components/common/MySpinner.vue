@@ -1,11 +1,23 @@
 <template>
-  <spinner class="loading-spinner" :size="90" :lineSize="9" line-fg-color="#41b883"/>
+  <spinner class="loading-spinner" :size="size" :lineSize="lineSize" line-fg-color="#41b883"/>
 </template>
 
 <script>
 import Spinner from 'vue-simple-spinner';
 
 export default {
+  props: {
+    size: {
+      type: Number,
+      required: false,
+      default: 90
+    },
+    lineSize: {
+      type: Number,
+      required: false,
+      default: 9
+    }
+  },
   components: {
     Spinner
   }

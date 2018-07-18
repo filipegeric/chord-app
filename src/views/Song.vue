@@ -10,7 +10,7 @@
         <sidebar :artist="song.artists[0]"/>
         <div id="song-column" class="column">
           <div id="song-container">
-            <h1>{{ song.name }} - 
+            <h1>{{ song.title }} - 
               <span v-for="(artist, i) in song.artists" :key="artist.id">
                 {{ artist.name }}{{ i != song.artists.length - 1 ? ', ' : '' }}
               </span>

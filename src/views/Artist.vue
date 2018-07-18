@@ -6,8 +6,9 @@
 
     <my-transition>
       <div v-if="!loading">
-        <h1>{{ artist.name }}</h1>
+        <h1 class="is-size-2">{{ artist.name }}</h1>
         <p>{{ artist.bio }}</p>
+        <h2 class="is-size-3">Songs</h2>
         <ul>
           <li v-for="song in songs" :key="song.id">
             <router-link :to="`/songs/${song.id}`">{{ song.name }}</router-link>
@@ -52,5 +53,7 @@ export default {
 </script>
 
 <style scoped>
-
+h2 {
+  margin-top: 1em;
+}
 </style>

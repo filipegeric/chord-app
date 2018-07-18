@@ -36,30 +36,40 @@
     </div>
     <div id="submit-div" class="control">
       <button id="preview-button" @click.prevent="compile" class="button is-link">Preview</button>
-      <button id="submit-button" @click.prevent="submitForm" class="button is-link">Submit</button>
+      <div>
+        <my-spinner v-if="submitSpinner" id="submit-spinner" :size="30" :lineSize="4" />
+        <button id="submit-button" @click.prevent="submitForm" class="button is-link">Submit</button>
+      </div>
     </div>
     <div id="preview-container">
       <label class="label">Preview:</label>
       <div id="preview" v-html="compiledInput"></div>
     </div>
     <create-artist-modal ref="createArtistModal" :addArtistToArray="addArtistToArray" />
+    <my-transition>
+      <confirmation-modal :to="`/songs/${newId}`" v-if="confirmationModal" />
+    </my-transition>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import CreateArtistModal from '../components/CreateSong/CreateArtistModal';
+import ConfirmationModal from '../components/CreateSong/ConfirmationModal';
 import InputField from '../components/common/InputField';
 
 export default {
   components: {
     CreateArtistModal,
-    InputField
+    InputField,
+    ConfirmationModal
   },
   data () {
     return {
+      confirmationModal: false,
+      submitSpinner: false,
+      newId: -1,
       numberOfArtists: 1,
-      input: '',
       compiledInput: '',
       artists: [],
       form: {
@@ -80,12 +90,16 @@ export default {
   },
   methods: {
     submitForm () {
+      this.submitSpinner = true;
       this.compile();
       this.form.body = this.compiledInput;
       axios.post('/songs/create', { form : this.form }).then(response => {
         console.log(response);
         // confirmation modal... TODO
-        this.$router.push({ path: `/songs/${response.data.id}` });
+        // treba da se pomeri glupi spiner pored submit dugmeta
+        this.newId = response.data.id;
+        this.confirmationModal = true;
+        //this.$router.push({ path: `/songs/${response.data.id}` });
       }).catch(err => {
         console.log(err);
       })
@@ -122,6 +136,14 @@ export default {
   margin-right: 1em;
   padding-bottom: 1em;
   text-align: left;
+}
+
+#submit-spinner {
+  margin-left: 0;
+  margin-right: 0;
+  padding-top: 0;
+  float: right;
+  width: unset;
 }
 
 #pick-artists {
@@ -175,6 +197,7 @@ export default {
 
 .textarea {
   width: 100%;
+  max-height: unset;
 }
 
 #form {
