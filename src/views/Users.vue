@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data() {
     return {
@@ -30,8 +28,8 @@ export default {
     }
   },
   created() {
-    axios.get('/users').then(response => {
-      this.users = response.data;
+    this.axios.get('/users/').then(response => {
+      this.users = response.data.results;
       this.loading = false;      
     }).catch(err => {
       console.log(err)

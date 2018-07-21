@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data () {
     return {
@@ -29,8 +27,8 @@ export default {
     }
   },
   created () {
-    axios.get('/artists').then(response => {
-      this.artists = response.data;
+    this.axios.get('/artists/').then(response => {
+      this.artists = response.data.results;
       this.loading = false;
     }).catch(err => {
       console.log(err)

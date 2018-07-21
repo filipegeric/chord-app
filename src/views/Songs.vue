@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data () {
     return {
@@ -25,7 +23,7 @@ export default {
     }
   },
   created () {
-    axios.get('/songs/').then(response => {
+    this.axios.get('/songs/').then(response => {
       console.log(response);
       
       this.songs = response.data.results;

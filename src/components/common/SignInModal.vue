@@ -10,7 +10,7 @@
         <section class="modal-card-body">
           <transition enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutUp">
             <div v-if="error" class="notification is-danger">
-              <button @click.prevent="/*TODO*/" class="delete"></button>
+              <button @click.prevent="$store.commit('changeLoginError', null); loading = false;" class="delete"></button>
               Please check your credentials!
             </div>
           </transition>
@@ -27,6 +27,7 @@
         </section>
         <footer class="modal-card-foot">
           <button class="button is-success" type="submit">Sign in</button>
+          <my-spinner id="spinner" :size="30" :lineSize="5" v-if="loading && !error"/>
           <button @click.prevent="close" class="button" type="reset">Cancel</button>
         </footer>
       </form>
@@ -45,6 +46,7 @@ export default {
   data () {
     return {
       isActive: false,
+      loading: false,
       credentials: {
         username: '',
         password: ''
@@ -58,7 +60,9 @@ export default {
   },
   methods: {
     handleSubmit () {
-      this.$store.dispatch('tryLogin', this.credentials)
+      this.$store.commit('changeLoginError', null);
+      this.loading = true;
+      this.$store.dispatch('tryLogin', this.credentials);
     }
   },
   watch: {
@@ -90,5 +94,13 @@ export default {
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1;
+}
+
+#spinner {
+  margin: 0;
+  z-index: 2;
+  width: unset;
+  padding: 0;
+  position: static;
 }
 </style>

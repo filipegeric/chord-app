@@ -9,12 +9,11 @@
       <form @submit.prevent="handleSubmit">
         <section class="modal-card-body">
           <transition enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutUp">
-            <div v-if="errors" class="notification is-danger content">
-              <button @click.prevent="$store.commit('changeRegisterErrors', null)" class="delete"></button>
+            <div v-if="errors || validationErrors.length > 0" class="notification is-danger content">
+              <button @click.prevent="$store.commit('changeRegisterErrors', null); validationErrors = []" class="delete"></button>
               <ul>
-                <li v-for="(value, key) in errors" :key="key">
-                  {{ value[0] }}
-                </li>
+                <li v-for="(value, key) in errors" :key="key">{{ value[0] }}</li>
+                <li v-for="(value, key) in validationErrors" :key="key">{{ value }}</li>
               </ul>
             </div>
           </transition>
@@ -29,11 +28,7 @@
               <input class="input" v-model="credentials.username" type="text" placeholder="Username" required>
             </p>
           </div>
-          <div class="field">
-            <p class="control">
-              <input class="input" v-model="credentials.email" type="email" placeholder="Email" required>
-            </p>
-          </div>
+          
           <div class="field">
             <p class="control">
               <input class="input" v-model="credentials.password" type="password" placeholder="Password" required>
@@ -42,6 +37,7 @@
         </section>
         <footer class="modal-card-foot">
           <button class="button is-success" type="submit">Register</button>
+          <my-spinner v-if="loading" id="spinner" :size="30" :lineSize="5" />
           <button @click.prevent="close" class="button" type="reset">Cancel</button>
         </footer>
       </form>
@@ -60,11 +56,12 @@ export default {
   },
   data () {
     return {
+      loading: false,
       isActive: false,
+      validationErrors: [],
       credentials: {
         username: '',
         name: '',
-        email: '',
         password: ''
       }
     }
@@ -76,6 +73,19 @@ export default {
   },
   methods: {
     handleSubmit () {
+      if(this.credentials.username.length < 3) {
+        this.validationErrors.push('Username should be at least 3 characters long.');
+      }
+      if(this.credentials.name.length == 0) {
+        this.validationErrors.push(`Name can't be empty.`);
+      }
+      if(this.credentials.password.length < 6) {
+        this.validationErrors.push('Password should be at least 6 characters long.');
+      }
+      if(this.validationErrors.length > 0) {
+        return;
+      }
+      this.loading = true;
       this.$store.dispatch('tryRegister', this.credentials)
     }
   },
@@ -86,6 +96,14 @@ export default {
           this.$refs.nameInput.focus()
         })
       }
+    },
+    credentials: {
+      handler(newValue) {
+        if(newValue.username.length >= 3 && newValue.name.length > 0 && newValue.password.length >= 6) {
+          this.validationErrors = [];
+        }
+      },
+      deep: true
     }
   }
 }
@@ -112,5 +130,13 @@ export default {
   padding-left: 0.2em;
   padding-right: 0.2em;
   padding-top: 0.2em;
+}
+
+#spinner {
+  margin: 0;
+  z-index: 2;
+  width: unset;
+  padding: 0;
+  position: static;
 }
 </style>

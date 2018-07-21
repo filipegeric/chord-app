@@ -6,7 +6,7 @@
         <h3>Songs by {{ artist.name }}</h3>
         <ul>
           <li v-for="song in songs" :key="song.id">
-            <router-link :to="`/songs/${song.id}`">{{ song.name }}</router-link>
+            <router-link :to="`/songs/${song.id}`">{{ song.title }}</router-link>
           </li>
         </ul>
       </div>
@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   props: {
     artist: {
@@ -31,8 +29,10 @@ export default {
     }
   },
   created () {
-    axios.get(`/artists/${this.artist.id}/songs`).then(response => {   
-      this.songs = response.data;
+    this.axios.get(`/artists/${this.artist.id}/songs`).then(response => {
+      console.log(response);
+      
+      this.songs = response.data.results;
       this.loading = false;
     }).catch(err => {
       console.log(err)

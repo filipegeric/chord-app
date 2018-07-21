@@ -13,6 +13,7 @@
     "node-sass": "^4.9.2",
     "sass-loader": "^7.0.3",
     "vue": "^2.5.16",
+    "vue-axios": "^2.1.2",
     "vue-router": "^3.0.1",
     "vue-simple-spinner": "^1.2.8",
     "vuex": "^3.0.1"

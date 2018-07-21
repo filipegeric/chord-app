@@ -27,6 +27,7 @@
         </section>
         <footer class="modal-card-foot">
           <button class="button is-success" type="submit">Create</button>
+          <!-- -->
           <button @click.prevent="close" class="button" type="reset">Cancel</button>
         </footer>
       </form>
@@ -35,8 +36,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   props: {
     addArtistToArray: {
@@ -54,7 +53,9 @@ export default {
   },
   methods: {
     handleSubmit () {
-      axios.post('/artists/create', { name: this.name, bio: this.bio }).then(response => {
+      this.axios.post('/artists/', 
+                  { name: this.name, bio: this.bio }, 
+                  { headers: { 'Authorization': `Bearer ${this.$store.state.token}` } }).then(response => {
         console.log(response);
         this.addArtistToArray(response.data);
         this.isActive = false;

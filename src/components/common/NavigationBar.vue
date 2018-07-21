@@ -32,34 +32,36 @@
       </div>
 
       <div class="navbar-end">
-        <a v-if="!$store.state.signedIn" @click.prevent="$store.commit('temp')/*openSignInModal*/" class="navbar-item">
+        <a v-if="!$store.state.signedIn" @click.prevent="openSignInModal" class="navbar-item">
           <span>Sign in</span>
         </a>
         <a v-if="!$store.state.signedIn" @click.prevent="openRegisterModal" class="navbar-item">
           <span>Register</span>
         </a>
-        <a v-if="$store.state.signedIn" @click.prevent class="navbar-item">
+        <a v-if="$store.state.signedIn" @click.prevent="navigateToProfile" class="navbar-item">
           <span>Profile</span>
         </a>
         <router-link  @click.native="handleNavigationClick" to="/create-song" v-if="$store.state.signedIn" class="navbar-item">
           <span>Create</span>
         </router-link>
-        <a v-if="$store.state.signedIn" @click.prevent="/*TODO*/" class="navbar-item">
+        <a v-if="$store.state.signedIn" @click.prevent="$store.commit('logout')" class="navbar-item">
           <span>Log out</span>
         </a>
 
         <div class="navbar-item">
           <div class="field has-addons">
-            <div class="control">
-              <input class="input is-rounded" type="text" placeholder="Song title or artist name">
-            </div>
-            <div class="control">
-              <a id="search-button" class="button is-rounded">
-                <span class="icon is-small is-right">
-                  <i class="fas fa-search"></i>
-                </span>
-              </a>
-            </div>
+            <form @submit.prevent="/*TODO*/" style="display: flex;">
+              <div class="control">
+                <input class="input is-rounded" type="text" placeholder="Song title or artist name">
+              </div>
+              <div class="control">
+                <a id="search-button" class="button is-rounded">
+                  <span class="icon is-small is-right">
+                    <i class="fas fa-search"></i>
+                  </span>
+                </a>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -92,6 +94,25 @@ export default {
     handleNavigationClick() {
       this.burgerIsActive = false;
       // default...
+    },
+    navigateToProfile() {
+      this.burgerIsActive = false;
+      if(this.$store.state.user == null) {
+        this.axios.post('/users/me/', {token: this.$store.state.token}).then(response => {
+          this.$store.commit('setUser', response.data);
+          /*if(this.$route.name == 'user' && this.$route.params.id != this.$store.state.user.id) {
+            this.$router.go();
+          }*/
+          this.$router.push({ path: `/users/${this.$store.state.user.id}` });
+        }).catch(err => {
+          console.log(err)
+        });
+      } else {
+        /*if(this.$route.name == 'user' && this.$route.params.id != this.$store.state.user.id) {
+          this.$router.go();
+        }*/
+        this.$router.push({ path: `/users/${this.$store.state.user.id}` });
+      }
     }
   }
 }

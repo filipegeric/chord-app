@@ -52,6 +52,11 @@ export default {
       'signedIn',
       'user'
     ])
+  },
+  created() {
+    if(localStorage.token) {
+      this.$store.commit('login', { token: localStorage.token })
+    }
   }
 };
 </script>

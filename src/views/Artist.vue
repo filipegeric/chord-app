@@ -11,7 +11,7 @@
         <h2 class="is-size-3">Songs</h2>
         <ul>
           <li v-for="song in songs" :key="song.id">
-            <router-link :to="`/songs/${song.id}`">{{ song.name }}</router-link>
+            <router-link :to="`/songs/${song.id}`">{{ song.title }}</router-link>
           </li>
         </ul>
       </div>
@@ -21,8 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data () {
     return {
@@ -34,20 +32,28 @@ export default {
   created () {
     if(this.$route.params.artist) {
       this.artist = this.$route.params.artist;
+      //temp
+      //this.loading = false;
+      //----
     } else {
-      axios.get(`/artists/${this.$route.params.id}`).then(response => {
+      this.axios.get(`/artists/${this.$route.params.id}/`).then(response => {
         this.artist = response.data;
+        //temp
+        //this.loading = false;
+        //----
       }).catch(err => {
         console.log(err)
       })
     }
 
-    axios.get(`/artists/${this.$route.params.id}/songs`).then(response => {   
-      this.songs = response.data;
+    
+    this.axios.get(`/artists/${this.$route.params.id}/songs`).then(response => {   
+      this.songs = response.data.results;
       this.loading = false;
     }).catch(err => {
       console.log(err)
     })
+    
   }
 }
 </script>

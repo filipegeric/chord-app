@@ -7,12 +7,12 @@
 
     <my-transition>
       <div id="song" v-if="!loading" class="columns">
-        <sidebar :artist="song.artists[0]"/>
+        <sidebar :artist="song.artist[0]"/>
         <div id="song-column" class="column">
           <div id="song-container">
             <h1>{{ song.title }} - 
-              <span v-for="(artist, i) in song.artists" :key="artist.id">
-                {{ artist.name }}{{ i != song.artists.length - 1 ? ', ' : '' }}
+              <span v-for="(artist, i) in song.artist" :key="artist.id">
+                {{ artist.name }}{{ i != song.artist.length - 1 ? ', ' : '' }}
               </span>
             </h1>
             <h3>Key: <code>{{ song.key }}</code></h3>
@@ -29,7 +29,6 @@
 
 <script>
 import Sidebar from "../components/Song/Sidebar";
-import axios from 'axios';
 
 export default {
   data() {
@@ -42,7 +41,8 @@ export default {
     Sidebar
   },
   created () {
-    axios.get(`/songs/${this.$route.params.id}`).then(response => {
+    this.axios.get(`/songs/${this.$route.params.id}/`).then(response => {
+      console.log(response.data);
       this.song = response.data;
       this.loading = false;
     }).catch(err => {

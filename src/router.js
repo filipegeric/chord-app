@@ -11,7 +11,7 @@ import MySpinner from './components/common/MySpinner.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -52,6 +52,9 @@ export default new Router({
     {
       path: '/create-song',
       name: 'create-song',
+      meta: {
+        requiresAuth: true,
+      },
       component: () => ({
         component: import('@/views/CreateSong.vue'),
         loading: MySpinner,
@@ -70,3 +73,15 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth) && localStorage.getItem('token')) {
+    next();
+  } else if (to.matched.some(record => record.meta.requiresAuth) && localStorage.getItem('token') == null) {
+    next('/');
+  } else {
+    next();
+  }
+});
+
+export default router;
