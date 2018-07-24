@@ -6,6 +6,7 @@
 
     <my-transition>
       <div v-if="!loading">
+        <img :src="user.avatar ? user.avatar : logo" alt="AVATAR">
         <h1 class="is-size-2">{{ user.username }}</h1>
         <h2>Uploaded songs:</h2>
         <ul>
@@ -20,12 +21,15 @@
 </template>
 
 <script>
+import logo from '@/assets/logo.png';
+
 export default {
   data() {
     return {
       user: null,
       loading: true,
-      songs: []
+      songs: [],
+      logo
     }
   },
   created() {

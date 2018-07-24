@@ -1,7 +1,11 @@
 <template>
   <div>
     <my-transition>
-      <my-spinner v-if="loading" />
+      <my-spinner v-if="loading && !error404" />
+    </my-transition>
+
+    <my-transition>
+      <not-found v-if="error404" />
     </my-transition>
 
     <my-transition>
@@ -21,32 +25,34 @@
 </template>
 
 <script>
+import NotFound from '@/views/NotFound';
+
 export default {
+  components: {
+    NotFound
+  },
   data () {
     return {
       artist: null,
       songs: [],
-      loading: true
+      loading: true,
+      error404: false
     }
   },
   created () {
     if(this.$route.params.artist) {
       this.artist = this.$route.params.artist;
-      //temp
-      //this.loading = false;
-      //----
     } else {
       this.axios.get(`/artists/${this.$route.params.id}/`).then(response => {
         this.artist = response.data;
-        //temp
-        //this.loading = false;
-        //----
       }).catch(err => {
         console.log(err)
+        if(err.response.status == 404) {
+          this.error404 = true;
+        }
       })
     }
 
-    
     this.axios.get(`/artists/${this.$route.params.id}/songs`).then(response => {   
       this.songs = response.data.results;
       this.loading = false;

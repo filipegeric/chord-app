@@ -8,6 +8,7 @@
           <li v-for="song in songs" :key="song.id">
             <router-link :to="`/songs/${song.id}`">{{ song.title }}</router-link>
           </li>
+          <li v-if="next"><a @click.prevent="loadMore">Load more...</a></li>
         </ul>
       </div>
     </my-transition>
@@ -25,18 +26,32 @@ export default {
   data () {
     return {
       loading: true,
-      songs: []
+      songs: [],
+      count: 0,
+      next: null,
     }
   },
   created () {
-    this.axios.get(`/artists/${this.artist.id}/songs`).then(response => {
-      console.log(response);
-      
-      this.songs = response.data.results;
-      this.loading = false;
-    }).catch(err => {
-      console.log(err)
-    })
+    this.fetchSongs(`/artists/${this.artist.id}/songs`);
+  },
+  methods: {
+    fetchSongs(url) {
+      this.loading = true;
+      this.axios.get(url).then(response => {
+        console.log(response);
+        this.songs = this.songs.concat(response.data.results);
+        this.count = response.data.count;
+        this.next = response.data.next;
+        this.loading = false;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    loadMore() {
+      if(this.next) {
+        this.fetchSongs(this.next);
+      }
+    }
   }
 }
 </script>

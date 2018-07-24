@@ -2,7 +2,11 @@
   <div id="song-view">
 
     <my-transition>
-      <my-spinner v-if="loading" />
+      <my-spinner v-if="loading && !error404" />
+    </my-transition>
+
+    <my-transition>
+      <not-found v-if="error404" />
     </my-transition>
 
     <my-transition>
@@ -18,7 +22,9 @@
             <h3>Key: <code>{{ song.key }}</code></h3>
             <h3>Description: {{ song.description }}</h3>
             <hr>
+            <transpose-box />
             <div id="compiled-view" v-html="song.body"></div>
+            
           </div>
         </div>
       </div>
@@ -29,25 +35,41 @@
 
 <script>
 import Sidebar from "../components/Song/Sidebar";
+import TransposeBox from "../components/Song/TransposeBox";
+import NotFound from '@/views/NotFound';
 
 export default {
   data() {
     return {
       loading: true,
-      song: null
+      error404: false
+    }
+  },
+  computed: {
+    song() {
+      return this.$store.state.songInFocus;
     }
   },
   components: {
-    Sidebar
+    Sidebar,
+    TransposeBox,
+    NotFound
   },
   created () {
     this.axios.get(`/songs/${this.$route.params.id}/`).then(response => {
       console.log(response.data);
-      this.song = response.data;
+      this.$store.commit('setSongInFocus', response.data);
       this.loading = false;
     }).catch(err => {
-      console.log(err)
+      console.log(err.response.status)
+      if(err.response.status == 404) {
+        this.error404 = true;
+      }
     })
+  },
+  beforeDestroy() {
+    this.$store.commit('setSongInFocus', null);
+    this.$store.commit('resetTranspose');
   }
 };
 </script>

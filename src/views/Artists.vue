@@ -15,24 +15,53 @@
       </div>
     </my-transition>
 
+    <my-transition>
+      <pagination v-if="count > 5" @next="handleNext" @previous="handlePrevious" @go-to="handleGoTo" :count="count" />
+    </my-transition>
+
   </div>
 </template>
 
 <script>
+import Pagination from '@/components/common/Pagination';
+
 export default {
+  components: {
+    Pagination
+  },
   data () {
     return {
       loading: true,
-      artists: []
+      artists: [],
+      count: 0,
+      next: null,
+      previous: null
     }
   },
   created () {
-    this.axios.get('/artists/').then(response => {
-      this.artists = response.data.results;
-      this.loading = false;
-    }).catch(err => {
-      console.log(err)
-    })
+    this.fetchArtists('/artists/');
+  },
+  methods: {
+    handleNext() {
+      this.fetchArtists(this.next);
+    },
+    handlePrevious() {
+      this.fetchArtists(this.previous);
+    },
+    handleGoTo(n) {
+      this.fetchArtists(`/artists/?limit=5&offset=${(n-1)*5}`);
+    },
+    fetchArtists(url) {
+      this.axios.get(url).then(response => {
+        this.artists = response.data.results;
+        this.count = response.data.count;
+        this.next = response.data.next;
+        this.previous = response.data.previous;
+        this.loading = false;
+      }).catch(err => {
+        console.log(err)
+      });
+    }
   }
 }
 </script>
@@ -44,5 +73,13 @@ h1 {
 
 ul {
   padding-top: 2em;
+}
+
+#artists {
+  height: 20em;
+}
+
+.pagination {
+  bottom: 0;
 }
 </style>

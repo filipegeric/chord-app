@@ -2,7 +2,7 @@
   <div class="home">
     <img src="../assets/logo.png">
     <h1 class="is-size-2">Welcome to Chord App</h1>
-    <h2 class="is-size-5">Find a song or <a @click.prevent="openRegisterModal">join</a> us!</h2>
+    <h2 class="is-size-5">Find a song <span v-if="!$store.state.signedIn">or <a @click.prevent="openRegisterModal">join</a> us</span>!</h2>
     <form @submit.prevent="/*TODO*/">
       <div class="field">
         <div class="control">

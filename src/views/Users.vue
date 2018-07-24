@@ -7,7 +7,7 @@
         <div class="columns is-multiline">
           <div v-for="user in users" :key="user.id" class="column is-2">
             <router-link :to="{ name: `user`, params: { id: user.id , user }}">
-              <img src="@/assets/logo.png" alt="IMG" style="height: 5em;">
+              <img :src="user.avatar ? user.avatar : logo" alt="IMG" style="height: 5em;">
             </router-link>
             <router-link :to="{ name: `user`, params: { id: user.id , user }}">
               <h2>{{ user.username }}</h2>
@@ -20,11 +20,14 @@
 </template>
 
 <script>
+import logo from '@/assets/logo.png';
+
 export default {
   data() {
     return {
       loading: true,
       users: [],
+      logo
     }
   },
   created() {
