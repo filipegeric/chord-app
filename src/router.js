@@ -18,21 +18,33 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
+      meta: {
+        index: 0,
+      },
     },
     {
       path: '/songs',
       name: 'songs',
       component: Songs,
+      meta: {
+        index: 1,
+      },
     },
     {
       path: '/artists',
       name: 'artists',
       component: Artists,
+      meta: {
+        index: 2,
+      },
     },
     {
       path: '/users',
       name: 'users',
       component: Users,
+      meta: {
+        index: 3,
+      },
     },
     {
       path: '/songs/:id',
@@ -54,6 +66,7 @@ const router = new Router({
       name: 'create-song',
       meta: {
         requiresAuth: true,
+        index: 4,
       },
       component: () => ({
         component: import('@/views/CreateSong.vue'),

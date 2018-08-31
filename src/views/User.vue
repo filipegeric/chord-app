@@ -6,7 +6,7 @@
 
     <my-transition>
       <div v-if="!loading">
-        <img :src="user.avatar ? user.avatar : logo" alt="AVATAR">
+        <img :src="user.avatar != 'http://127.0.0.1:8000/' ? user.avatar  : logo" alt="AVATAR">
         <h1 class="is-size-2">{{ user.username }}</h1>
         <h2>Uploaded songs:</h2>
         <ul>
@@ -69,5 +69,8 @@ export default {
 </script>
 
 <style scoped>
-
+img {
+  height: 8em;
+  border-radius: 50%;
+}
 </style>

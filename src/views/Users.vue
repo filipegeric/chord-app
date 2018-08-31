@@ -7,7 +7,7 @@
         <div class="columns is-multiline">
           <div v-for="user in users" :key="user.id" class="column is-2">
             <router-link :to="{ name: `user`, params: { id: user.id , user }}">
-              <img :src="user.avatar ? user.avatar : logo" alt="IMG" style="height: 5em;">
+              <img :src="user.avatar != 'http://127.0.0.1:8000/' ? user.avatar : logo" alt="IMG">
             </router-link>
             <router-link :to="{ name: `user`, params: { id: user.id , user }}">
               <h2>{{ user.username }}</h2>
@@ -42,5 +42,8 @@ export default {
 </script>
 
 <style scoped>
-
+img {
+  height: 5em;
+  border-radius: 50%;
+}
 </style>

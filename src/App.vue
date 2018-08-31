@@ -5,8 +5,8 @@
       appear 
       appear-active-class="animated fadeIn" 
       mode="out-in" 
-      enter-active-class="animated fadeIn" 
-      leave-active-class="animated fadeOut"
+      :enter-active-class="`animated ${transitionEnter}`" 
+      :leave-active-class="`animated ${transitionLeave}`"
     >
       <router-view :openRegisterModal="openRegisterModal"/>
     </transition>
@@ -33,6 +33,12 @@ export default {
     RegisterModal,
     SignInModal,
   },
+  data() {
+    return {
+      transitionEnter: '',
+      transitionLeave: '',
+    }
+  },
   methods: {
     openRegisterModal() {
       this.$refs.registerModal.isActive = true;
@@ -45,7 +51,7 @@ export default {
     },
     closeSignInModal() {
       this.$refs.signInModal.isActive = false;
-    }
+    },
   },
   computed: {
     ...mapGetters([
@@ -56,6 +62,20 @@ export default {
   created() {
     if(localStorage.token) {
       this.$store.commit('login', { token: localStorage.token })
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      if(from.meta.index < to.meta.index) {
+        this.transitionEnter = 'fadeInRight';
+        this.transitionLeave = 'fadeOutLeft';
+      } else if(from.meta.index > to.meta.index) {
+        this.transitionEnter = 'fadeInLeft';
+        this.transitionLeave = 'fadeOutRight';
+      } else {
+        this.transitionEnter = 'fadeIn';
+        this.transitionLeave = 'fadeOut';
+      }
     }
   }
 };
